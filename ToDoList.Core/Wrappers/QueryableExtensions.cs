@@ -20,5 +20,45 @@ namespace ToDoList.Core.Wrappers
             var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
             return OffsetPaginatedResult<T>.Success(items, count, pageNumber, pageSize);
         }
+
+        public static async Task<CursorPaginatedResult<T>> ToCursorPaginatedListAsync<T, TCursor>(
+     this IQueryable<T> source,
+     TCursor cursor,
+     int pageSize,
+     Func<T, TCursor> getIdFunc
+ )
+     where T : class
+     where TCursor : IComparable<TCursor>
+        {
+            if (source == null)
+                throw new Exception("Empty source");
+
+            pageSize = pageSize <= 0 ? 10 : pageSize;
+
+            IQueryable<T> query;
+            if (EqualityComparer<TCursor>.Default.Equals(cursor, default))
+            {
+                query = source.OrderBy(x => getIdFunc(x));
+            }
+            else
+            {
+                query = source.Where(x => getIdFunc(x).CompareTo(cursor) > 0)
+                              .OrderBy(x => getIdFunc(x));
+            }
+
+            var items = await query.Take(pageSize + 1).ToListAsync();
+
+            TCursor nextCursor = default;
+            if (items.Count > pageSize)
+            {
+                nextCursor = getIdFunc(items[pageSize]);
+                items = items.Take(pageSize).ToList();
+            }
+
+
+            return CursorPaginatedResult<T>.Success(items, nextCursor?.ToString(), null);
+        }
+
+
     }
 }
