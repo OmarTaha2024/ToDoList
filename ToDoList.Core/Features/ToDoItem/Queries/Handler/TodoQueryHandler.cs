@@ -46,7 +46,7 @@ namespace ToDoList.Core.Features.ToDoItem.Queries.Handler
         public async Task<OffsetPaginatedResult<GetToDoItemoffsetPaginatedListResponse>> Handle(GetToDoItemoffsetPaginatedListQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Data.Entities.ToDoItem, GetToDoItemoffsetPaginatedListResponse>> ex = ex => new GetToDoItemoffsetPaginatedListResponse(ex.Id, ex.Title, ex.IsCompleted);
-            var filterqueryable = await _todoserv.FilterStudentsPaginatedQueryable(request.OrderBy, request.Search);
+            var filterqueryable = _todoserv.FiltertodoitemPaginatedQueryable(request.OrderBy, request.Search);
             var paginatedlist = await filterqueryable.Select(ex).ToPaginatedListAsync(request.PageNumber, request.PageSize);
             return paginatedlist;
         }

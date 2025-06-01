@@ -1,4 +1,5 @@
 ﻿using ToDoList.Data.Entities;
+using ToDoList.Data.Enums;
 using ToDoList.Infrustructure.Abstract;
 using ToDoList.Infrustructure.Context;
 using ToDoList.Service.Abstracts;
@@ -50,6 +51,27 @@ namespace ToDoList.Service.Services
                     return "falied";
                 }
             }
+        }
+
+        public IQueryable<ToDoItem> FiltertodoitemPaginatedQueryable(ToDoItemoOrderingEnum orderingEnum, string search)
+        {
+            var querable = _todoitemRepository.GetTableNoTracking().AsQueryable();
+            if (search != null)
+            {
+                querable = querable.Where(s => s.Title.Contains(search));
+
+            }
+            switch (orderingEnum)
+            {
+                case ToDoItemoOrderingEnum.id:
+                    querable = querable.OrderBy(x => x.Id);
+                    break;
+                case ToDoItemoOrderingEnum.title:
+                    querable = querable.OrderBy(x => x.Title);
+                    break;
+            }
+
+            return querable;
         }
 
         public async Task<List<ToDoItem>> GetAllToDoItems()
