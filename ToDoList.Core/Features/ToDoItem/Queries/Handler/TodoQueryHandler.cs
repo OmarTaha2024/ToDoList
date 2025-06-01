@@ -54,10 +54,24 @@ namespace ToDoList.Core.Features.ToDoItem.Queries.Handler
 
         public async Task<CursorPaginatedResult<GetToDoItemCursorPaginatedListResponse>> Handle(GetToDoItemcursorPaginatedListQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Data.Entities.ToDoItem, GetToDoItemCursorPaginatedListResponse>> ex = ex => new GetToDoItemCursorPaginatedListResponse(ex.Id, ex.Title, ex.IsCompleted);
+
             var queryable = _todoserv.GettodoitemQueryableList();
-            var paginatedlist = await queryable.Select(ex).ToPaginatedListAsync(request.Cursor, request.PageSize);
-            return paginatedlist;
+
+
+            var paginatedEntities = await queryable.ToCursorPaginatedListAsync(request.Cursor, request.PageSize);
+
+
+            var dtoList = paginatedEntities.Data
+                .Select(x => new GetToDoItemCursorPaginatedListResponse(x.Id, x.Title, x.IsCompleted))
+                .ToList();
+
+            return new CursorPaginatedResult<GetToDoItemCursorPaginatedListResponse>(
+                paginatedEntities.Succeeded,
+                dtoList,
+                paginatedEntities.NextCursor,
+                paginatedEntities.PreviousCursor,
+                paginatedEntities.Messages
+            );
         }
         #endregion
 

@@ -86,6 +86,12 @@ namespace ToDoList.Service.Services
             return await Task.FromResult(todoitem);
         }
 
+        public IQueryable<ToDoItem> GettodoitemQueryableList()
+        {
+            return _todoitemRepository.GetTableNoTracking().AsQueryable();
+
+        }
+
         public async Task<string> UpdateAsync(ToDoItem todoItem)
         {
             using (var tran = _AppDbContext.Database.BeginTransaction())

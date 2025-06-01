@@ -22,6 +22,12 @@ namespace ToDoList.Api.Controllers
             var responce = await Mediator.Send(query);
             return Ok(responce);
         }
+        [HttpGet("CusrorpaginatedList")]
+        public async Task<IActionResult> GettodoitemCusrorpaginatedList([FromQuery] GetToDoItemcursorPaginatedListQuery query)
+        {
+            var responce = await Mediator.Send(query);
+            return Ok(responce);
+        }
         [HttpPost]
         public async Task<IActionResult> Additem([FromBody] AddTodoItemCommand _command)
         {

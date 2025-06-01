@@ -21,14 +21,12 @@ namespace ToDoList.Core.Wrappers
             return OffsetPaginatedResult<T>.Success(items, count, pageNumber, pageSize);
         }
 
-        public static async Task<CursorPaginatedResult<T>> ToCursorPaginatedListAsync<T, TCursor>(
+        public static async Task<CursorPaginatedResult<T>> ToCursorPaginatedListAsync<T>(
      this IQueryable<T> source,
-     TCursor cursor,
-     int pageSize,
-     Func<T, TCursor> getIdFunc
+     int cursor,
+     int pageSize
  )
      where T : class
-     where TCursor : IComparable<TCursor>
         {
             if (source == null)
                 throw new Exception("Empty source");
@@ -36,28 +34,25 @@ namespace ToDoList.Core.Wrappers
             pageSize = pageSize <= 0 ? 10 : pageSize;
 
             IQueryable<T> query;
-            if (EqualityComparer<TCursor>.Default.Equals(cursor, default))
-            {
-                query = source.OrderBy(x => getIdFunc(x));
-            }
+            if (cursor == 0)
+                query = source.OrderBy(x => EF.Property<int>(x, "Id"));
             else
-            {
-                query = source.Where(x => getIdFunc(x).CompareTo(cursor) > 0)
-                              .OrderBy(x => getIdFunc(x));
-            }
+                query = source.Where(x => EF.Property<int>(x, "Id") > cursor)
+                              .OrderBy(x => EF.Property<int>(x, "Id"));
 
             var items = await query.Take(pageSize + 1).ToListAsync();
 
-            TCursor nextCursor = default;
+            int nextCursor = 0;
             if (items.Count > pageSize)
             {
-                nextCursor = getIdFunc(items[pageSize]);
+                var propInfo = typeof(T).GetProperty("Id");
+                nextCursor = (int)propInfo.GetValue(items[pageSize]);
                 items = items.Take(pageSize).ToList();
             }
 
-
-            return CursorPaginatedResult<T>.Success(items, nextCursor?.ToString(), null);
+            return CursorPaginatedResult<T>.Success(items, nextCursor.ToString(), null);
         }
+
 
 
     }
