@@ -1,16 +1,19 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
+using System.Linq.Expressions;
 using ToDoList.Core.Bases;
 using ToDoList.Core.Features.ToDoItem.Queries.models;
 using ToDoList.Core.Features.ToDoItem.Queries.Result;
 using ToDoList.Core.Resources;
+using ToDoList.Core.Wrappers;
 using ToDoList.Service.Abstracts;
 
 namespace ToDoList.Core.Features.ToDoItem.Queries.Handler
 {
     public class TodoQueryHandler : ResponseHandler,
-        IRequestHandler<GetToDoItemListQuery, Response<List<GetToDoItemListResponse>>>
+        IRequestHandler<GetToDoItemListQuery, Response<List<GetToDoItemListResponse>>>,
+        IRequestHandler<GetToDoItemoffsetPaginatedListQuery, OffsetPaginatedResult<GetToDoItemoffsetPaginatedListResponse>>
     {
         #region Fields
         private readonly IToDoItemService _todoserv;
@@ -38,6 +41,14 @@ namespace ToDoList.Core.Features.ToDoItem.Queries.Handler
             Result.Meta = new { count = todolistMapper.Count() };
             return Result;
 
+        }
+
+        public async Task<OffsetPaginatedResult<GetToDoItemoffsetPaginatedListResponse>> Handle(GetToDoItemoffsetPaginatedListQuery request, CancellationToken cancellationToken)
+        {
+            Expression<Func<Data.Entities.ToDoItem, GetToDoItemoffsetPaginatedListResponse>> ex = ex => new GetToDoItemoffsetPaginatedListResponse(ex.Id, ex.Title, ex.IsCompleted);
+            var filterqueryable = await _todoserv.FilterStudentsPaginatedQueryable(request.OrderBy, request.Search);
+            var paginatedlist = await filterqueryable.Select(ex).ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            return paginatedlist;
         }
         #endregion
 
