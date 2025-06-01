@@ -13,7 +13,8 @@ namespace ToDoList.Core.Features.ToDoItem.Queries.Handler
 {
     public class TodoQueryHandler : ResponseHandler,
         IRequestHandler<GetToDoItemListQuery, Response<List<GetToDoItemListResponse>>>,
-        IRequestHandler<GetToDoItemoffsetPaginatedListQuery, OffsetPaginatedResult<GetToDoItemoffsetPaginatedListResponse>>
+        IRequestHandler<GetToDoItemoffsetPaginatedListQuery, OffsetPaginatedResult<GetToDoItemoffsetPaginatedListResponse>>,
+        IRequestHandler<GetToDoItemcursorPaginatedListQuery, CursorPaginatedResult<GetToDoItemCursorPaginatedListResponse>>
     {
         #region Fields
         private readonly IToDoItemService _todoserv;
@@ -48,6 +49,14 @@ namespace ToDoList.Core.Features.ToDoItem.Queries.Handler
             Expression<Func<Data.Entities.ToDoItem, GetToDoItemoffsetPaginatedListResponse>> ex = ex => new GetToDoItemoffsetPaginatedListResponse(ex.Id, ex.Title, ex.IsCompleted);
             var filterqueryable = _todoserv.FiltertodoitemPaginatedQueryable(request.OrderBy, request.Search);
             var paginatedlist = await filterqueryable.Select(ex).ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            return paginatedlist;
+        }
+
+        public async Task<CursorPaginatedResult<GetToDoItemCursorPaginatedListResponse>> Handle(GetToDoItemcursorPaginatedListQuery request, CancellationToken cancellationToken)
+        {
+            Expression<Func<Data.Entities.ToDoItem, GetToDoItemCursorPaginatedListResponse>> ex = ex => new GetToDoItemCursorPaginatedListResponse(ex.Id, ex.Title, ex.IsCompleted);
+            var queryable = _todoserv.GettodoitemQueryableList();
+            var paginatedlist = await queryable.Select(ex).ToPaginatedListAsync(request.Cursor, request.PageSize);
             return paginatedlist;
         }
         #endregion
