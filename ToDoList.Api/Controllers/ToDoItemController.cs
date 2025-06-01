@@ -16,6 +16,12 @@ namespace ToDoList.Api.Controllers
             var responce = await Mediator.Send(new GetToDoItemListQuery());
             return NewResult(responce);
         }
+        [HttpGet("offsetpaginatedList")]
+        public async Task<IActionResult> GettodoitemoffsetpaginatedList([FromQuery] GetToDoItemoffsetPaginatedListQuery query)
+        {
+            var responce = await Mediator.Send(query);
+            return Ok(responce);
+        }
         [HttpPost]
         public async Task<IActionResult> Additem([FromBody] AddTodoItemCommand _command)
         {
