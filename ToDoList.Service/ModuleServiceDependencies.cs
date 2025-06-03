@@ -9,6 +9,9 @@ namespace ToDoList.Service
         public static IServiceCollection AddModuleServiceDependencies(this IServiceCollection services)
         {
             services.AddTransient<IToDoItemService, ToDoItemService>();
+            services.AddMemoryCache();
+            services.AddScoped<ICacheService, MemoryCacheService>();
+
 
             return services;
         }
