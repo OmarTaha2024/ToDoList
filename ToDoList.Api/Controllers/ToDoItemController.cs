@@ -2,11 +2,13 @@
 using ToDoList.Api.BaseController;
 using ToDoList.Core.Features.ToDoItem.Commands.Models;
 using ToDoList.Core.Features.ToDoItem.Queries.models;
+using ToDoList.Core.Filters;
 
 namespace ToDoList.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(ResourceFilter))]
     public class ToDoItemController : AppControllerBase
     {
         [HttpGet]

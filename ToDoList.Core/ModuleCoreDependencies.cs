@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using ToDoList.Core.Behaviors;
+using ToDoList.Core.Filters;
 
 namespace ToDoList.Core
 {
@@ -21,7 +22,7 @@ namespace ToDoList.Core
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
-
+            services.AddScoped<ResourceFilter>();
 
             return services;
         }

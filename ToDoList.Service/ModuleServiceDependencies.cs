@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ToDoList.Service.Abstracts;
+using ToDoList.Service.Resourceservice.Abstract;
+using ToDoList.Service.Resourceservice.Implementation;
 using ToDoList.Service.Services;
 
 namespace ToDoList.Service
@@ -11,7 +13,7 @@ namespace ToDoList.Service
             services.AddTransient<IToDoItemService, ToDoItemService>();
             services.AddMemoryCache();
             services.AddScoped<ICacheService, MemoryCacheService>();
-
+            services.AddScoped<ILoggerService, LoggerService>();
 
             return services;
         }
