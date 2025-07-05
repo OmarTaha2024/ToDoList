@@ -1,0 +1,51 @@
+﻿@model List<ToDoList.MvcFrontend.Models.TodoItem>
+<style>
+    body {
+        background-color: lemonchiffon !important;
+    }
+</style>
+
+<div class="container border-10 border-success  ">
+    <h2 class="fw-bold text-secondary display-3 text-start mb-5 ">@ViewBag.Title</h2>
+    <span class="mb-3 d-inline-block text-success fst-italic">
+        @Html.ActionLink("إضافة مهمة جديدة", "Create", null, new { @class = "btn btn-success btn-sm" })
+    </span>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>الرقم</th>
+                <th>العنوان</th>
+                <th>منتهية؟</th>
+                <th>التحكم</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>
+                        @if (item.IsCompleted)
+                        {
+                            <span class="badge rounded-pill bg-success">✔️ نعم</span>
+                        }
+                        else
+                        {
+                            <span class="badge rounded-pill bg-danger">❌ لا</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("تعديل", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-primary" })@* الزرار خلفيته بيضا ولما اقف عليه يكون ازرق  | *@
+                        @Html.ActionLink("حذف", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })@* الزرار خلفيته بيضا ولما اقف عليه تبقي زرقا*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+
+    </table>
+</div>
+
+
+

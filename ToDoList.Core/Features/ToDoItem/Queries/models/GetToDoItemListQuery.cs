@@ -8,6 +8,6 @@ namespace ToDoList.Core.Features.ToDoItem.Queries.models
     public class GetToDoItemListQuery : IRequest<Response<List<GetToDoItemListResponse>>>, ICacheable
     {
         public string CacheKey => $"AllItems";
-        public TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
+        public TimeSpan CacheDuration => TimeSpan.FromMicroseconds(1);
     }
 }

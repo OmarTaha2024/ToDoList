@@ -14,7 +14,8 @@ namespace ToDoList.Core.Features.ToDoItem.Queries.Handler
     public class TodoQueryHandler : ResponseHandler,
         IRequestHandler<GetToDoItemListQuery, Response<List<GetToDoItemListResponse>>>,
         IRequestHandler<GetToDoItemoffsetPaginatedListQuery, OffsetPaginatedResult<GetToDoItemoffsetPaginatedListResponse>>,
-        IRequestHandler<GetToDoItemcursorPaginatedListQuery, CursorPaginatedResult<GetToDoItemCursorPaginatedListResponse>>
+        IRequestHandler<GetToDoItemcursorPaginatedListQuery, CursorPaginatedResult<GetToDoItemCursorPaginatedListResponse>>,
+        IRequestHandler<GetToDoItemByIdQuery, Response<GetToDoItemResponse>>
     {
         #region Fields
         private readonly IToDoItemService _todoserv;
@@ -47,7 +48,7 @@ namespace ToDoList.Core.Features.ToDoItem.Queries.Handler
         public async Task<OffsetPaginatedResult<GetToDoItemoffsetPaginatedListResponse>> Handle(GetToDoItemoffsetPaginatedListQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Data.Entities.ToDoItem, GetToDoItemoffsetPaginatedListResponse>> ex = ex => new GetToDoItemoffsetPaginatedListResponse(ex.Id, ex.Title, ex.IsCompleted);
-            var filterqueryable = _todoserv.FiltertodoitemPaginatedQueryable(request.OrderBy, request.Search);
+            var filterqueryable = _todoserv.GettodoitemQueryableList();
             var paginatedlist = await filterqueryable.Select(ex).ToPaginatedListAsync(request.PageNumber, request.PageSize);
             return paginatedlist;
         }
@@ -72,6 +73,14 @@ namespace ToDoList.Core.Features.ToDoItem.Queries.Handler
                 paginatedEntities.PreviousCursor,
                 paginatedEntities.Messages
             );
+        }
+
+        public async Task<Response<GetToDoItemResponse>> Handle(GetToDoItemByIdQuery request, CancellationToken cancellationToken)
+        {
+            var todoitem = await _todoserv.GetById(request.Id);
+            var todolistMapper = _mapper.Map<GetToDoItemResponse>(todoitem);
+            return Success(todolistMapper);
+
         }
         #endregion
 

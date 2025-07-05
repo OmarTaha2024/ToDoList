@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ToDoList.Api.BaseController;
 using ToDoList.Core.Features.ToDoItem.Commands.Models;
 using ToDoList.Core.Features.ToDoItem.Queries.models;
@@ -12,10 +13,18 @@ namespace ToDoList.Api.Controllers
     public class ToDoItemController : AppControllerBase
     {
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetList()
         {
 
             var responce = await Mediator.Send(new GetToDoItemListQuery());
+            return NewResult(responce);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Getbyid([FromRoute] int id)
+        {
+
+            var responce = await Mediator.Send(new GetToDoItemByIdQuery(id));
             return NewResult(responce);
         }
         [HttpGet("offsetpaginatedList")]
@@ -31,6 +40,8 @@ namespace ToDoList.Api.Controllers
             return Ok(responce);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Additem([FromBody] AddTodoItemCommand _command)
         {
 
@@ -38,7 +49,7 @@ namespace ToDoList.Api.Controllers
             return NewResult(responce);
         }
         [HttpPut]
-        public async Task<IActionResult> Updateitem([FromBody] UpdateTodoItemCommand _command)
+        public async Task<IActionResult> Updateitem([FromQuery] UpdateTodoItemCommand _command)
         {
 
             var responce = await Mediator.Send(_command);
@@ -46,7 +57,7 @@ namespace ToDoList.Api.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Deleteitem([FromBody] DeleteTodoItemCommand _command)
+        public async Task<IActionResult> Deleteitem([FromQuery] DeleteTodoItemCommand _command)
         {
 
             var responce = await Mediator.Send(_command);

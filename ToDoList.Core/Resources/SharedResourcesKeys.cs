@@ -12,5 +12,7 @@
         public const string UnAuthorized = "UnAuthorized";
         public const string BadRequest = "BadRequest";
         public const string UnprocessableEntity = "UnprocessableEntity";
+        public const string EmailIsNotExist = "EmailIsNotExist";
+        public const string PasswordNotCorrect = "PasswordNotCorrect";
     }
 }

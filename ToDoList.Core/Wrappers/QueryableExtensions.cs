@@ -46,7 +46,7 @@ namespace ToDoList.Core.Wrappers
             if (items.Count > pageSize)
             {
                 var propInfo = typeof(T).GetProperty("Id");
-                nextCursor = (int)propInfo.GetValue(items[pageSize]);
+                nextCursor = (int)propInfo.GetValue(items[pageSize - 1]);
                 items = items.Take(pageSize).ToList();
             }
 

@@ -25,9 +25,7 @@ namespace ToDoList.Core.Features.ToDoItem.Commands.Validators
         #region Actions
         public void ApplyValidationRules()
         {
-            RuleFor(x => x.IsCompleted)
-                .NotEmpty().WithMessage(_Localizer[SharedResourcesKeys.NotEmpty])
-                .NotNull().WithMessage(_Localizer[SharedResourcesKeys.Required]);
+
 
 
         }

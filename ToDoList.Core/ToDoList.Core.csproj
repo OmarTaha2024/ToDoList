@@ -18,7 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ToDoList.Data\ToDoList.Data.csproj" />
     <ProjectReference Include="..\ToDoList.Service\ToDoList.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Appuser\Command\Validator\" />
   </ItemGroup>
 
 </Project>

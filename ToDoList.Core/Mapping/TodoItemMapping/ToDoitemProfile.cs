@@ -9,6 +9,7 @@ namespace ToDoList.Core.Mapping.TodoItemMapping
             AddToDoitemCommandMapping();
             UpdateToDoitemCommandMapping();
             GetTodoListQueryMapping();
+            GetTodoitemQueryMapping();
         }
     }
 }

@@ -15,11 +15,13 @@ namespace ToDoList.Core.Filters
         {
             _loggerService.LogRequest(context.HttpContext);
             _loggerService.ModifyResponse(context.HttpContext);
+            _loggerService.AddCookie(context.HttpContext);
+
         }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
-
+            _loggerService.LogRequest(context.HttpContext);
         }
     }
 }

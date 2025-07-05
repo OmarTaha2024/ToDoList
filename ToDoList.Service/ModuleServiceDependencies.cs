@@ -11,6 +11,9 @@ namespace ToDoList.Service
         public static IServiceCollection AddModuleServiceDependencies(this IServiceCollection services)
         {
             services.AddTransient<IToDoItemService, ToDoItemService>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IOAuthService, OAuthService>();
+            services.AddHttpClient();
             services.AddMemoryCache();
             services.AddScoped<ICacheService, MemoryCacheService>();
             services.AddScoped<ILoggerService, LoggerService>();
