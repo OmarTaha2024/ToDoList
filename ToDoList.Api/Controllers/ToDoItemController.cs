@@ -13,7 +13,7 @@ namespace ToDoList.Api.Controllers
     public class ToDoItemController : AppControllerBase
     {
         [HttpGet]
-        [Authorize]
+        [HybridAuthorize]
         public async Task<IActionResult> GetList()
         {
 
@@ -21,6 +21,7 @@ namespace ToDoList.Api.Controllers
             return NewResult(responce);
         }
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> Getbyid([FromRoute] int id)
         {
 
@@ -49,6 +50,7 @@ namespace ToDoList.Api.Controllers
             return NewResult(responce);
         }
         [HttpPut]
+
         public async Task<IActionResult> Updateitem([FromQuery] UpdateTodoItemCommand _command)
         {
 
